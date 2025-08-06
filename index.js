@@ -12,6 +12,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 
+app.use(session({
+    secret: 'noteSecret',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(flash());
+
+// Flash message middleware
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.session.user;
+    next();
+});
+
 main()
 .then(() => console.log("SUcess"))
 .catch((err) => console.log(err));
@@ -39,7 +54,7 @@ app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
     const hashed = await bcrypt.hash(password, 10);
     await User.create({ username, password: hashed });
-    // req.flash('success', 'Registered successfully!');
+     req.flash('success', 'Registered successfully!');
     res.redirect('/login');
 });
 
@@ -50,18 +65,22 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
-        // req.flash('error', 'Invalid username');
+         req.flash('error', 'Invalid username');
         return res.redirect('/login');
     }
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
-        // req.flash('error', 'Wrong password');
+         req.flash('error', 'Wrong password');
         return res.redirect('/login');
     }
-    // req.session.user = user;
+    req.flash('success', 'Login successfully!');
+     req.session.user = user;
     res.redirect('/dashboard');
 });
 
+app.get("/dashboard",(req,res)=>{
+    res.render("dashboard.ejs");
+})
 
 app.use((req,res)=>{
     res.send("Hello");

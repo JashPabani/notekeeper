@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+
+
+
+<h2>Dashboard</h2>
+
+<p>Welcome, <%= user.username %>!</p>
+
+<p>This is your private dashboard where you can manage your notes.</p>
+
+<!-- Placeholder for notes -->
+<div>
+  <h3>Your Notes</h3>
+  <% if (user.notes && user.notes.length > 0) { %>
+    <ul>
+      <% user.notes.forEach(note => { %>
+        <li>
+          <strong><%= note.title %></strong>: <%= note.content %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>You have no notes yet. Start writing!</p>
+  <% } %>
+</div>
+
+<a href="/logout">Logout</a>
+
+<%- include('partials/footer') %>

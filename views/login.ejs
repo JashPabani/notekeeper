@@ -12,6 +12,15 @@
 <%- include('partials/header') %>
 
 <h2>Login</h2>
+
+<% if (success) { %>
+  <div class="flash success"><%= success %></div>
+<% } %>
+
+<% if (error) { %>
+  <div class="flash error"><%= error %></div>
+<% } %>
+
 <form method="POST" action="/login">
   <label>Username:</label>
   <input type="text" name="username" required><br>
@@ -25,5 +34,6 @@
 <p>Don't have an account? <a href="/signup">Sign up</a></p>
 
 <%- include('partials/footer') %>
+
 
 

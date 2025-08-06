@@ -3,6 +3,11 @@
 <h1>Welcome to NoteKeeper</h1>
 <p>Your simple personal note tracking app.</p>
 
-
+<!-- <% if (!user) { %>
+  <a href="/login">Login</a> or <a href="/signup">Sign up</a> to get started!
+<% } else { %>
+  <p>Hello <%= user.username %>!</p>
+  <a href="/dashboard">Go to Dashboard</a>
+<% } %> -->
 
 <%- include('partials/footer') %>

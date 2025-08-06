@@ -1,5 +1,14 @@
 <%- include('partials/header') %>
 
+<% if (success) { %>
+  <div class="flash success"><%= success %></div>
+<% } %>
+
+<% if (error) { %>
+  <div class="flash error"><%= error %></div>
+<% } %>
+
+
 <h2>Signup</h2>
 <form method="POST" action="/signup">
   <label>Username:</label>
