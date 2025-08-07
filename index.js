@@ -28,14 +28,12 @@ app.use((req, res, next) => {
 });
 
 main()
-.then(() => console.log("SUcess"))
+.then(() => console.log("Sucess DB"))
 .catch((err) => console.log(err));
 
 async function main(){
     await mongoose.connect("mongodb://127.0.0.1:27017/notekeeper");
 }
-
-
 
 
 
@@ -65,7 +63,7 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
-         req.flash('error', 'Invalid username');
+        req.flash('error', 'Invalid username');
         return res.redirect('/login');
     }
     const match = await bcrypt.compare(req.body.password, user.password);
@@ -74,13 +72,68 @@ app.post('/login', async (req, res) => {
         return res.redirect('/login');
     }
     req.flash('success', 'Login successfully!');
-     req.session.user = user;
+    req.session.user = user;
     res.redirect('/dashboard');
 });
 
-app.get("/dashboard",(req,res)=>{
-    res.render("dashboard.ejs");
+app.get("/logout",(req,res)=>{
+    req.session.destroy();
+    res.redirect("/");
 })
+
+function isLoginedin(req,res,next){
+    // console.log(req.body)
+    if(!req.session.user){
+        req.flash('Error','You are not Login');
+        res.redirect("/login");
+    }
+    // console.log(req.body)
+    next();
+}
+
+// ---------------Wrork with notes ------------------------------
+app.get("/dashboard",isLoginedin,async(req,res)=>{
+    const notes = await Note.find({ user: req.session.user._id });
+    res.render('dashboard', { notes });
+})
+
+// app.post('/notes',isLoginedin,async (req,res)=>{
+//     await Note.create({
+//         title : req.body.title,
+//         content : req.body.content,
+//         user : req.session.user._id
+//     })
+//     console.log("jell");
+//     req.flash('success', 'Note created!');
+//     res.redirect('/dashboard');
+// })
+
+
+app.post('/notes', isLoginedin, async (req, res) => {
+    const { title, content } = req.body;
+    console.log("Received data:", { title, content }); // Check what data is being received
+    
+    // Add validation to ensure title and content are not empty
+    if (!title || !content) {
+        req.flash('error', 'Title and content are required.');
+        return res.redirect('/dashboard');
+    }
+    
+    try {
+        const note = await Note.create({
+            title,
+            content,
+            user: req.session.user._id
+        });
+        console.log("Note created:", note);
+        req.flash('success', 'Note created!');
+        res.redirect('/dashboard');
+    } catch (err) {
+        console.error("Error creating note:", err);
+        req.flash('error', 'An error occurred while creating the note.');
+        res.redirect('/dashboard');
+    }
+});
 
 app.use((req,res)=>{
     res.send("Hello");
