@@ -136,6 +136,28 @@ app.post('/notes', isLoginedin, async (req, res) => {
     }
 });
 
+// Edit Note
+app.get('/notes/edit/:id', isLoginedin, async (req, res) => {
+    const note = await Note.findOne({ _id: req.params.id, user: req.session.user._id });
+    if (!note) return res.redirect('/dashboard');
+    res.render('edit', { note });
+});
+app.post('/notes/edit/:id', isLoginedin, async (req, res) => {
+    await Note.findOneAndUpdate(
+        { _id: req.params.id, user: req.session.user._id },
+        { title: req.body.title, content: req.body.content }
+    );
+    req.flash('success', 'Note updated!');
+    res.redirect('/dashboard');
+});
+
+// Delete Note
+app.post('/notes/delete/:id', isLoginedin, async (req, res) => {
+    await Note.deleteOne({ _id: req.params.id, user: req.session.user._id });
+    req.flash('success', 'Note deleted!');
+    res.redirect('/dashboard');
+});
+
 app.use((req,res)=>{
     res.send("Hello");
 })

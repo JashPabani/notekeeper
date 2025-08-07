@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<div class="container mt-5">
+  <h2>Edit Note</h2>
+
+  <% if (success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= success %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% } %>
+
+  <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= error %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/notes/edit/<%= note._id %>">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" name="title" class="form-control" value="<%= note.title %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="content" class="form-label">Content</label>
+      <textarea name="content" class="form-control" rows="4" required><%= note.content %></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Note</button>
+    <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
