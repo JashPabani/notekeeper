@@ -1,33 +1,48 @@
 <%- include('partials/header') %>
 
-<h2>Dashboard</h2>
+<% if (success && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
 
-<p>Welcome, <%= user.username %>!</p>
+<% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
 
-<p>This is your private dashboard where you can manage your notes.</p>
 
-<form method="POST" action="/notes">
-    <input type="text" name="title" placeholder="Title" required>
-    <textarea name="content" placeholder="Write your note..." required></textarea>
-    <button type="submit">Add Note</button>
-</form>
+<div class="main-content">
+  <h2 class="mb-4">Dashboard</h2>
+  <p>Welcome, <strong><%= user.username %></strong>!</p>
+  <p>This is your private dashboard where you can manage your notes.</p>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <form method="POST" action="/notes" class="mb-4">
+    <div class="mb-3">
+      <input type="text" name="title" class="form-control" placeholder="Title" required>
+    </div>
+    <div class="mb-3">
+      <textarea name="content" class="form-control" rows="4" placeholder="Write your note..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Add Note</button>
+  </form>
 
-<!-- Placeholder for notes -->
-<div>
-  <h3>Your Notes</h3>
+  <h4>Your Notes</h4>
   <% if (notes && notes.length > 0) { %>
-    <ul>
+    <ul class="list-group">
       <% notes.forEach(note => { %>
-        <li>
-          <strong><%= note.title %></strong>: <%= note.content %>
+        <li class="list-group-item">
+          <strong><%= note.title %></strong><br>
+          <small><%= note.content %></small>
         </li>
       <% }) %>
     </ul>
   <% } else { %>
-    <p>You have no notes yet. Start writing!</p>
+    <div class="alert alert-info mt-3">You have no notes yet. Start writing!</div>
   <% } %>
 </div>
-
-<a href="/logout">Logout</a>
 
 <%- include('partials/footer') %>

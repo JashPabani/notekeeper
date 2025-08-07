@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+
 // Register
 app.get('/signup', (req, res) => {
     res.render('signup');
@@ -52,7 +53,7 @@ app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
     const hashed = await bcrypt.hash(password, 10);
     await User.create({ username, password: hashed });
-     req.flash('success', 'Registered successfully!');
+    req.flash('success', 'Registered successfully!');
     res.redirect('/login');
 });
 

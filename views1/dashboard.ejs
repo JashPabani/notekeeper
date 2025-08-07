@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+
+<h2>Dashboard</h2>
+
+<p>Welcome, <%= user.username %>!</p>
+
+<p>This is your private dashboard where you can manage your notes.</p>
+
+<form method="POST" action="/notes">
+    <input type="text" name="title" placeholder="Title" required>
+    <textarea name="content" placeholder="Write your note..." required></textarea>
+    <button type="submit">Add Note</button>
+</form>
+
+<!-- Placeholder for notes -->
+<div>
+  <h3>Your Notes</h3>
+  <% if (notes && notes.length > 0) { %>
+    <ul>
+      <% notes.forEach(note => { %>
+        <li>
+          <strong><%= note.title %></strong>: <%= note.content %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>You have no notes yet. Start writing!</p>
+  <% } %>
+</div>
+
+<a href="/logout">Logout</a>
+
+<%- include('partials/footer') %>
